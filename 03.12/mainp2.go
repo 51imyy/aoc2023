@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	file, _ := os.ReadFile("input")
+	file, _ := os.ReadFile("input.test")
 	data := string(file)
 	lineLength := len(strings.Split(data, "\n")[0])
 	var savedIndexes []int
@@ -33,42 +33,49 @@ func main() {
 		// if times == 2 multiply the numbers
 		// add than this to result list
 		// Sum result list
+		times := 0
+		var tmpResult []int
 		for _, index := range list {
 			a := string(data[symbolIndex+index])
-			if !IsDigit(a) {
+			if !isDigit(a) {
 				continue
 			}
 			lIndex := index
 			IntStr := a
-			for symbolIndex+lIndex-1 >= 0 && IsDigit(string(data[symbolIndex+lIndex-1])) {
+			for symbolIndex+lIndex-1 >= 0 && isDigit(string(data[symbolIndex+lIndex-1])) {
 				IntStr = fmt.Sprintf("%s%s", string(data[symbolIndex+lIndex-1]), IntStr)
 				lIndex--
 			}
 
 			rIndex := index
-			for symbolIndex+rIndex+1 < len(data) && IsDigit(string(data[symbolIndex+rIndex+1])) {
+			for symbolIndex+rIndex+1 < len(data) && isDigit(string(data[symbolIndex+rIndex+1])) {
 				IntStr = fmt.Sprintf("%s%s", IntStr, string(data[symbolIndex+rIndex+1]))
 				rIndex++
 			}
 
-			if !Contains(savedIndexes, symbolIndex+lIndex) {
+			if !contains(savedIndexes, symbolIndex+lIndex) {
+				times++
 				i, _ := strconv.Atoi(IntStr)
-				result = append(result, i)
+				tmpResult = append(tmpResult, i)
 				savedIndexes = append(savedIndexes, symbolIndex+lIndex)
 			}
 		}
+		if times == 2 {
+			fmt.Println(tmpResult)
+			result = append(result, tmpResult[0]*tmpResult[1])
+		}
 	}
 
-	fmt.Println(Sum(result))
+	fmt.Println(sum(result))
 }
 
-func IsDigit(str string) (isDigit bool) {
+func isDigit(str string) (isDigit bool) {
 	_, err := strconv.Atoi(str)
 	isDigit = err == nil
 	return
 }
 
-func Contains(indexList []int, index int) (contains bool) {
+func contains(indexList []int, index int) (contains bool) {
 	contains = false
 	for _, i := range indexList {
 		if i == index {
@@ -80,7 +87,7 @@ func Contains(indexList []int, index int) (contains bool) {
 	return
 }
 
-func Sum(list []int) (result int) {
+func sum(list []int) (result int) {
 	for _, i := range list {
 		result += i
 	}
